@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Выбранное состояние -->
+    <item android:state_selected="true">
+        <shape>
+            <gradient
+                android:startColor="#4CAF50"
+                android:endColor="#45A049"
+                android:angle="0"/>
+            <corners android:radius="25dp"/>
+            <stroke
+                android:width="4dp"
+                android:color="#FFFFFF"/>
+        </shape>
+    </item>
+    <!-- Нажатое состояние -->
+    <item android:state_pressed="true">
+        <shape>
+            <gradient
+                android:startColor="#4CAF50"
+                android:endColor="#45A049"
+                android:angle="0"/>
+            <corners android:radius="25dp"/>
+            <stroke
+                android:width="4dp"
+                android:color="#FFFFFF"/>
+        </shape>
+    </item>
+    <!-- Обычное состояние -->
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#2196F3"
+                android:endColor="#1976D2"
+                android:angle="0"/>
+            <corners android:radius="25dp"/>
+            <stroke
+                android:width="2dp"
+                android:color="#FFFFFF"/>
+        </shape>
+    </item>
+</selector>
+

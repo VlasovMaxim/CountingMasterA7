@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/gradient_background">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="24dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/stats_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Статистика игры"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:id="@+id/current_game_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Текущая игра:"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FFEB3B"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/score_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Результат: 0%"
+                android:textSize="22sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/correct_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Правильных ответов: 0/0"
+                android:textSize="20sp"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/last_level_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Система счисления: -"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="32dp"/>
+
+            <TextView
+                android:id="@+id/history_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="История игр:"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FFEB3B"
+                android:layout_marginBottom="12dp"/>
+
+            <LinearLayout
+                android:id="@+id/history_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <Button
+            android:id="@+id/back_to_menu_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="В ГЛАВНОЕ МЕНЮ"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="@drawable/button_gradient_green"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
+
+        <Button
+            android:id="@+id/play_again_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="СЫГРАТЬ СНОВА"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="@drawable/button_gradient_blue"
+            android:textColor="#FFFFFF"/>
+
+    </LinearLayout>
+
+</LinearLayout>

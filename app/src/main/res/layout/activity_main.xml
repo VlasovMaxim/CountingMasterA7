@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="@drawable/gradient_background">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Тренируем счёт 2.0"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="60dp"
+        android:shadowColor="#000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="4" />
+
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="НАЧАТЬ"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/button_gradient_green"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/stats_button"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="СТАТИСТИКА"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/button_gradient_blue"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/exit_button"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="ВЫХОД"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="@drawable/button_gradient_red"
+        android:textColor="#FFFFFF" />
+</LinearLayout>
