@@ -40,11 +40,13 @@ public class StatisticsActivity extends AppCompatActivity {
             int correctAnswers = intent.getIntExtra("correct_answers", 0);
             int totalQuestions = intent.getIntExtra("total_questions", 0);
             int base = intent.getIntExtra("base", 2);
+            int difficulty = intent.getIntExtra("difficulty", 1);
             String baseName = getBaseName(base);
+            String difficultyName = getDifficultyName(difficulty);
 
             scoreText.setText("Результат: " + scorePercent + "%");
             correctText.setText("Правильных ответов: " + correctAnswers + "/" + totalQuestions);
-            lastLevelText.setText("Система счисления: " + base + " (" + baseName + ")");
+            lastLevelText.setText("Система: " + base + " (" + baseName + ") | Сложность: " + difficultyName);
         } else {
             // Если открыто из главного меню, показываем последнюю игру
             List<StatsManager.GameStats> history = statsManager.getGameHistory();
@@ -52,12 +54,13 @@ public class StatisticsActivity extends AppCompatActivity {
                 StatsManager.GameStats lastGame = history.get(0);
                 scoreText.setText("Результат: " + lastGame.scorePercent + "%");
                 correctText.setText("Правильных ответов: " + lastGame.correctAnswers + "/" + lastGame.totalQuestions);
-                String baseName = getBaseName(lastGame.maxLevel);
-                lastLevelText.setText("Система счисления: " + lastGame.maxLevel + " (" + baseName + ")");
+                String baseName = getBaseName(lastGame.base);
+                String difficultyName = getDifficultyName(lastGame.difficulty);
+                lastLevelText.setText("Система: " + lastGame.base + " (" + baseName + ") | Сложность: " + difficultyName);
             } else {
                 scoreText.setText("Результат: -");
                 correctText.setText("Правильных ответов: -");
-                lastLevelText.setText("Система счисления: -");
+                lastLevelText.setText("Система счисления: - | Сложность: -");
             }
         }
 
@@ -72,21 +75,23 @@ public class StatisticsActivity extends AppCompatActivity {
 
         playAgainButton.setOnClickListener(v -> {
             Intent gameIntent = new Intent(StatisticsActivity.this, GameActivity.class);
-            // Получаем систему счисления из Intent или из последней игры
-//            Intent intent = getIntent();
+            // Получаем систему счисления и сложность из Intent или из последней игры
             if (intent.hasExtra("base")) {
                 int base = intent.getIntExtra("base", 2);
+                int difficulty = intent.getIntExtra("difficulty", 1);
                 String baseName = getBaseName(base);
                 gameIntent.putExtra("base", base);
                 gameIntent.putExtra("base_name", baseName);
+                gameIntent.putExtra("difficulty", difficulty);
             } else {
                 // Если открыто из главного меню, используем последнюю игру
                 List<StatsManager.GameStats> history = statsManager.getGameHistory();
                 if (!history.isEmpty()) {
                     StatsManager.GameStats lastGame = history.get(0);
-                    String baseName = getBaseName(lastGame.maxLevel);
-                    gameIntent.putExtra("base", lastGame.maxLevel);
+                    String baseName = getBaseName(lastGame.base);
+                    gameIntent.putExtra("base", lastGame.base);
                     gameIntent.putExtra("base_name", baseName);
+                    gameIntent.putExtra("difficulty", lastGame.difficulty);
                 }
             }
             startActivity(gameIntent);
@@ -96,9 +101,9 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private void displayHistory() {
         historyContainer.removeAllViews();
-        
+
         List<StatsManager.GameStats> history = statsManager.getGameHistory();
-        
+
         if (history.isEmpty()) {
             TextView noHistoryText = new TextView(this);
             noHistoryText.setText("История игр пуста");
@@ -120,10 +125,10 @@ public class StatisticsActivity extends AppCompatActivity {
         itemLayout.setOrientation(LinearLayout.VERTICAL);
         itemLayout.setPadding(16, 12, 16, 12);
         itemLayout.setBackgroundResource(R.drawable.history_item_background);
-        
+
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
         );
         params.setMargins(0, 0, 0, 12);
         itemLayout.setLayoutParams(params);
@@ -136,10 +141,12 @@ public class StatisticsActivity extends AppCompatActivity {
         itemLayout.addView(gameNumberText);
 
         TextView scoreText = new TextView(this);
-        String baseName = getBaseName(stats.maxLevel);
-        scoreText.setText("Результат: " + stats.scorePercent + "% | " + 
-                         stats.correctAnswers + "/" + stats.totalQuestions + 
-                         " правильных | Система: " + stats.maxLevel + " (" + baseName + ")");
+        String baseName = getBaseName(stats.base);
+        String difficultyName = getDifficultyName(stats.difficulty);
+        scoreText.setText("Результат: " + stats.scorePercent + "% | " +
+                stats.correctAnswers + "/" + stats.totalQuestions + " правильных | " +
+                "Система: " + stats.base + " (" + baseName + ") | " +
+                "Сложность: " + difficultyName);
         scoreText.setTextColor(0xFFE0E0E0);
         scoreText.setTextSize(14f);
         scoreText.setPadding(0, 4, 0, 0);
@@ -156,6 +163,17 @@ public class StatisticsActivity extends AppCompatActivity {
                 return "восьмеричная";
             case 16:
                 return "шестнадцатеричная";
+            default:
+                return "неизвестная";
+        }
+    }
+
+    private String getDifficultyName(int difficulty) {
+        switch (difficulty) {
+            case 1:
+                return "легкий";
+            case 2:
+                return "сложный";
             default:
                 return "неизвестная";
         }

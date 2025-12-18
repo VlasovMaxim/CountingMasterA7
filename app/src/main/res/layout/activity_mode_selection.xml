@@ -15,8 +15,53 @@
         android:textSize="32sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="20dp"
         android:gravity="center" />
+
+    <!-- Новый блок: Выбор уровня сложности -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Уровень сложности:"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="10dp"
+        android:gravity="center" />
+
+    <RadioGroup
+        android:id="@+id/difficulty_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="30dp"
+        android:gravity="center">
+
+        <RadioButton
+            android:id="@+id/easy_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Лёгкий"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:buttonTint="#4CAF50"
+            android:layout_marginEnd="20dp"
+            android:padding="12dp" />
+
+        <RadioButton
+            android:id="@+id/hard_radio_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Сложный"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:buttonTint="#FF9800"
+            android:padding="12dp" />
+
+    </RadioGroup>
+    <!-- Конец блока выбора сложности -->
 
     <Button
         android:id="@+id/base2_button"
@@ -62,4 +107,3 @@
         android:textColor="#FFFFFF" />
 
 </LinearLayout>
-

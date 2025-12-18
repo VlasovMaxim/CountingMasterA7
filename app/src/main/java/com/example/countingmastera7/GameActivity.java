@@ -15,22 +15,25 @@ import java.util.Random;
 public class GameActivity extends AppCompatActivity {
 
     private static final int TOTAL_QUESTIONS = 10;
-    private static final int MAX_LIVES = 3;
-    private static final long TIME_PER_QUESTION = 30000; // 30 секунд
+    private static final int MAX_LIVES_EASY = 4; // Легкий: 4 жизни
+    private static final int MAX_LIVES_HARD = 3; // Сложный: 3 жизни
+    private static final long TIME_EASY = 45000; // 45 секунд для легкого уровня
+    private static final long TIME_HARD = 20000; // 20 секунд для сложного уровня
 
     private TextView questionCounterText, timerText, baseText, questionText, feedbackText;
-    private TextView heart1, heart2, heart3;
+    private TextView heart1, heart2, heart3, heart4; // Добавили четвертое сердечко
     private Button answerButton1, answerButton2, answerButton3, answerButton4, checkButton;
 
     private int currentQuestionIndex = 1;
-    private int livesLeft = MAX_LIVES;
+    private int maxLives; // Будет установлено в зависимости от сложности
+    private int livesLeft;
     private int selectedAnswerIndex = -1; // 0..3
     private int correctAnswerIndex = -1;
     private int base; // Система счисления (2, 8, 16)
     private String baseName;
+    private int difficulty; // 1 - легкий, 2 - сложный
 
     private CountDownTimer countDownTimer;
-
     private Random random = new Random();
 
     private int totalCorrectAnswers = 0;
@@ -42,16 +45,18 @@ public class GameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game);
 
         initViews();
-        
-        // Получаем систему счисления из Intent
+
+        // Получаем систему счисления и уровень сложности из Intent
         Intent intent = getIntent();
         if (intent.hasExtra("base") && intent.hasExtra("base_name")) {
             base = intent.getIntExtra("base", 2);
             baseName = intent.getStringExtra("base_name");
+            difficulty = intent.getIntExtra("difficulty", 1); // По умолчанию легкий
         } else {
-            // Если не передано, используем двоичную по умолчанию
+            // Если не передано, используем двоичную по умолчанию и легкий уровень
             base = 2;
             baseName = "Двоичная";
+            difficulty = 1;
         }
 
         startNewGame();
@@ -67,6 +72,7 @@ public class GameActivity extends AppCompatActivity {
         heart1 = findViewById(R.id.heart1);
         heart2 = findViewById(R.id.heart2);
         heart3 = findViewById(R.id.heart3);
+        heart4 = findViewById(R.id.heart4); // Новое сердечко
 
         answerButton1 = findViewById(R.id.answer_button_1);
         answerButton2 = findViewById(R.id.answer_button_2);
@@ -84,13 +90,35 @@ public class GameActivity extends AppCompatActivity {
 
     private void startNewGame() {
         currentQuestionIndex = 1;
-        livesLeft = MAX_LIVES;
+
+        // Устанавливаем количество жизней в зависимости от сложности
+        if (difficulty == 1) {
+            maxLives = MAX_LIVES_EASY; // 4 жизни для легкого
+        } else {
+            maxLives = MAX_LIVES_HARD; // 3 жизни для сложного
+        }
+        livesLeft = maxLives;
+
         totalCorrectAnswers = 0;
         totalQuestionsAnswered = 0;
-        
-        baseText.setText("Система: " + base + " (" + baseName.toLowerCase() + ")");
+
+        String difficultyText = (difficulty == 1) ? "легкий" : "сложный";
+        baseText.setText("Система: " + base + " (" + baseName.toLowerCase() + ") | Сложность: " + difficultyText);
+
+        // Настраиваем отображение сердечек
+        setupHeartsUI();
         updateLivesUI();
         startNewQuestion();
+    }
+
+    private void setupHeartsUI() {
+        if (difficulty == 1) {
+            // Для легкого уровня показываем 4 сердечка
+            heart4.setVisibility(android.view.View.VISIBLE);
+        } else {
+            // Для сложного уровня скрываем 4-е сердечко
+            heart4.setVisibility(android.view.View.GONE);
+        }
     }
 
     private void startNewQuestion() {
@@ -107,7 +135,9 @@ public class GameActivity extends AppCompatActivity {
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
 
-        countDownTimer = new CountDownTimer(TIME_PER_QUESTION, 1000) {
+        long timePerQuestion = (difficulty == 1) ? TIME_EASY : TIME_HARD;
+
+        countDownTimer = new CountDownTimer(timePerQuestion, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timerText.setText("Время: " + (millisUntilFinished / 1000) + "с");
@@ -174,8 +204,16 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void updateLivesUI() {
-        TextView[] hearts = {heart1, heart2, heart3};
-        for (int i = 0; i < MAX_LIVES; i++) {
+        TextView[] hearts;
+        if (difficulty == 1) {
+            // Для легкого уровня используем 4 сердечка
+            hearts = new TextView[]{heart1, heart2, heart3, heart4};
+        } else {
+            // Для сложного уровня используем 3 сердечка
+            hearts = new TextView[]{heart1, heart2, heart3};
+        }
+
+        for (int i = 0; i < maxLives; i++) {
             if (i < livesLeft) {
                 hearts[i].setText("❤️");
             } else {
@@ -200,19 +238,20 @@ public class GameActivity extends AppCompatActivity {
     private void endGame() {
         if (countDownTimer != null) countDownTimer.cancel();
 
-        int scorePercent = totalQuestionsAnswered > 0 
-            ? (int) ((totalCorrectAnswers * 100.0f) / totalQuestionsAnswered)
-            : 0;
-        
-        // Сохраняем статистику (используем base как "уровень" для совместимости)
+        int scorePercent = totalQuestionsAnswered > 0
+                ? (int) ((totalCorrectAnswers * 100.0f) / totalQuestionsAnswered)
+                : 0;
+
+        // Сохраняем статистику
         StatsManager statsManager = new StatsManager(this);
-        statsManager.saveGame(scorePercent, totalCorrectAnswers, totalQuestionsAnswered, base);
+        statsManager.saveGame(scorePercent, totalCorrectAnswers, totalQuestionsAnswered, base, difficulty);
 
         Intent intent = new Intent(GameActivity.this, StatisticsActivity.class);
         intent.putExtra("score_percent", scorePercent);
         intent.putExtra("correct_answers", totalCorrectAnswers);
         intent.putExtra("total_questions", totalQuestionsAnswered);
         intent.putExtra("base", base);
+        intent.putExtra("difficulty", difficulty);
         startActivity(intent);
         finish();
     }
@@ -229,7 +268,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void generateArithmeticQuestion(int opType) {
-        int max = 30; // Максимальное значение для генерации чисел
+        // Для обоих уровней одинаковые числа
+        int max = 30;
         int a = random.nextInt(max) + 1;
         int b = random.nextInt(max) + 1;
 
@@ -254,7 +294,7 @@ public class GameActivity extends AppCompatActivity {
         Button[] buttons = {answerButton1, answerButton2, answerButton3, answerButton4};
         String[] answers = new String[4];
         answers[correctAnswerIndex] = resultStr;
-        
+
         // Генерируем уникальные неправильные ответы
         for (int i = 0; i < 4; i++) {
             if (i == correctAnswerIndex) {
@@ -268,14 +308,13 @@ public class GameActivity extends AppCompatActivity {
                 if (fake == result10) fake += 2;
                 attempts++;
                 if (attempts > 50) {
-                    // Если не удалось найти уникальный, просто добавим большое число
                     fake = result10 + 10 + i;
                     break;
                 }
             } while (isDuplicateAnswer(answers, toBaseString(fake, base), i));
             answers[i] = toBaseString(fake, base);
         }
-        
+
         // Устанавливаем тексты кнопок и делаем все кнопки видимыми
         for (int i = 0; i < 4; i++) {
             buttons[i].setText(answers[i]);
@@ -287,7 +326,16 @@ public class GameActivity extends AppCompatActivity {
         int a = random.nextInt(20) + 1;
         int b = random.nextInt(20) + 1;
 
-        String[] ops = {"<", ">", "=", "<=", ">=", "!="};
+        // Разные операторы сравнения для разных уровней сложности
+        String[] ops;
+        if (difficulty == 1) {
+            // Легкий уровень: только базовые операторы
+            ops = new String[]{"<", ">", "=", "!="};
+        } else {
+            // Сложный уровень: больше операторов
+            ops = new String[]{"<", ">", "=", "<=", ">=", "!="};
+        }
+
         String op = ops[random.nextInt(ops.length)];
 
         boolean shouldBeTrue = random.nextBoolean();
